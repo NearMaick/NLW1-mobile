@@ -1,8 +1,8 @@
 import React, { useCallback } from 'react';
 import { Feather as Icon } from '@expo/vector-icons';
-import { View, TouchableOpacity, Text } from 'react-native';
+import { View, TouchableOpacity, Text, Image } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import MapView from 'react-native-maps';
+import MapView, { Marker } from 'react-native-maps';
 import { SvgUri } from 'react-native-svg';
 
 import { ScrollView } from 'react-native-gesture-handler';
@@ -13,6 +13,10 @@ const Points: React.FC = () => {
 
   const handleNavigateBack = useCallback(() => {
     navigation.goBack();
+  }, [navigation]);
+
+  const handleNavigateToDetail = useCallback(() => {
+    navigation.navigate('Detail');
   }, [navigation]);
 
   return (
@@ -28,7 +32,33 @@ const Points: React.FC = () => {
         </Text>
 
         <View style={styles.mapContainer}>
-          <MapView style={styles.map} />
+          <MapView
+            style={styles.map}
+            initialRegion={{
+              latitude: -23.4084301,
+              longitude: -46.4998748,
+              latitudeDelta: 0.01,
+              longitudeDelta: 0.01,
+            }}
+          >
+            <Marker
+              style={styles.mapMarker}
+              onPress={handleNavigateToDetail}
+              coordinate={{ latitude: -23.4084301, longitude: -46.4998748 }}
+            >
+              <View style={styles.mapMarkerContainer}>
+                <Image
+                  style={styles.mapMarkerImage}
+                  source={{
+                    uri:
+                      'https://images.unsplash.com/photo-1556767576-5ec41e3239ea?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=400&q=60',
+                  }}
+                />
+
+                <Text style={styles.mapMarkerTitle}>Mercado</Text>
+              </View>
+            </Marker>
+          </MapView>
         </View>
       </View>
       <View style={styles.itemsContainer}>
