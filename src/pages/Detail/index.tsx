@@ -38,7 +38,7 @@ const Detail: React.FC = () => {
 
         <View style={styles.address}>
           <Text style={styles.addressTitle}>Endereço</Text>
-          <Text style={styles.addressContent}>Belo Jardim, PE</Text>
+          <Text style={styles.addressContent}>Belo Jardim - PE</Text>
         </View>
       </View>
       <View style={styles.footer}>
