@@ -1,5 +1,5 @@
-import { useNavigation } from '@react-navigation/native';
-import React, { useCallback } from 'react';
+import { useNavigation, useRoute } from '@react-navigation/native';
+import React, { useCallback, useEffect, useState } from 'react';
 import { Feather as Icon, FontAwesome } from '@expo/vector-icons';
 import {
   TouchableOpacity,
@@ -11,13 +11,47 @@ import {
 import { RectButton } from 'react-native-gesture-handler';
 
 import styles from './styles';
+import api from '../../services/api';
+
+interface ParamsProps {
+  point_id: number;
+}
+
+interface DataProps {
+  point: {
+    image: string;
+    name: string;
+    email: string;
+    whatsapp: string;
+    city: string;
+    uf: string;
+  };
+  items: {
+    title: string;
+  }[];
+}
 
 const Detail: React.FC = () => {
+  const [data, setData] = useState<DataProps>({} as DataProps);
+
   const navigation = useNavigation();
+  const route = useRoute();
+
+  const routeParams = route.params as ParamsProps;
+
+  useEffect(() => {
+    api.get(`points/${routeParams.point_id}`).then(response => {
+      setData(response.data);
+    });
+  }, [routeParams.point_id]);
 
   const handleNavigateBack = useCallback(() => {
     navigation.goBack();
   }, [navigation]);
+
+  if (!data.point) {
+    return null;
+  }
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
@@ -29,16 +63,19 @@ const Detail: React.FC = () => {
         <Image
           style={styles.pointImage}
           source={{
-            uri:
-              'https://images.unsplash.com/photo-1556767576-5ec41e3239ea?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=400&q=60',
+            uri: data.point.image,
           }}
         />
-        <Text style={styles.pointName}>Mercado do Jorge</Text>
-        <Text style={styles.pointItems}>Lâmpadas, óleo e cozinha</Text>
+        <Text style={styles.pointName}>{data.point.name}</Text>
+        <Text style={styles.pointItems}>
+          {data.items.map(item => item.title).join(', ')}
+        </Text>
 
         <View style={styles.address}>
           <Text style={styles.addressTitle}>Endereço</Text>
-          <Text style={styles.addressContent}>Belo Jardim - PE</Text>
+          <Text style={styles.addressContent}>
+            {data.point.city} - {data.point.uf}
+          </Text>
         </View>
       </View>
       <View style={styles.footer}>
