@@ -9,6 +9,7 @@ import {
   SafeAreaView,
 } from 'react-native';
 import { RectButton } from 'react-native-gesture-handler';
+import * as MailComposer from 'expo-mail-composer';
 
 import styles from './styles';
 import api from '../../services/api';
@@ -49,6 +50,13 @@ const Detail: React.FC = () => {
     navigation.goBack();
   }, [navigation]);
 
+  const handleComposeMail = useCallback(() => {
+    MailComposer.composeAsync({
+      subject: 'Interesse na coleta de resíduos',
+      recipients: [data.point.email],
+    });
+  }, [data.point]);
+
   if (!data.point) {
     return null;
   }
@@ -84,7 +92,7 @@ const Detail: React.FC = () => {
           <Text style={styles.buttonText}>Whatsapp</Text>
         </RectButton>
 
-        <RectButton style={styles.button} onPress={() => {}}>
+        <RectButton style={styles.button} onPress={handleComposeMail}>
           <Icon name="mail" size={20} color="#fff" />
           <Text style={styles.buttonText}>E-mail</Text>
         </RectButton>
